@@ -1,0 +1,36 @@
+<% if @order != nil %>
+<h2>Thank you for shopping with us!</h2>
+<p>Let's review your order:</p>
+<%@order.order_items.each do |k,v| %>
+<ul>
+	<p> Product: <%= Product.find(k).name %></p>
+	<p>Qty: <%= v %></p>
+</ul>
+<% end -%>
+<p>
+	<strong>Order Total: <%=number_to_currency @order.grand_total %></strong>
+</p>
+
+<div>
+  <%= form_tag order_complete_path do %>
+    <article>
+      <label class="amount">
+        <span><%= number_to_currency @order.grand_total %></span>
+      </label>
+    </article>
+    <div>
+      <%= hidden_field_tag :order_id, @order.id %>
+    </div>
+
+    <script src="http://checkout.stripe.com/checkout.js"
+    class="stripe-button"
+    data-key="<%= Rails.configuration.stripe[:publishable_key] %>"
+    data-description="Order #<%= @order.id %>"
+    data-amount="<%= (@order.grand_total.to_f.round(2) * 100) %>"></script>
+  <% end %>
+  <% else %>
+  <h1>
+    You do not have anything in your cart!
+  </h1>
+</div>
+<% end -%>
