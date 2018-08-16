@@ -35,7 +35,9 @@ before_action :authenticate_user!, except: [:add_to_cart, :view_order]
   end
 
   def view_order
+    if !session[:order_id].nil?
   	@line_items = current_order.line_items
+    end
   end
 
   def checkout
